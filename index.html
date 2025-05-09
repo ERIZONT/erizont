@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ERIZONT</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -21,141 +26,144 @@
       padding: 10px;
       font-size: 28px;
       font-weight: bold;
+      color: white;
     }
 
-    #container {
+    main {
       display: flex;
       flex: 1;
       overflow: hidden;
     }
 
-    #menu-esquerdo {
-      width: 300px;
+    aside {
+      width: 250px;
       background-color: #111;
-      overflow-y: auto;
       padding: 10px;
+      overflow-y: auto;
       border-right: 1px solid #333;
     }
 
-    #player-container {
+    .conteudo {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 10px;
+      position: relative;
     }
 
     video {
       width: 100%;
-      max-width: 90%;
-      max-height: 360px;
-      background-color: black;
-      border: 3px solid #fff;
-      border-radius: 8px;
+      max-width: 720px;
+      max-height: 60vh;
+      border: 2px solid #00ff88;
+      border-radius: 10px;
+      background: black;
     }
 
-    .grupo-btn {
-      background-color: #222;
-      color: #fff;
-      border: 1px solid #555;
-      padding: 6px 10px;
-      width: 100%;
-      text-align: left;
-      font-weight: bold;
-      margin-top: 8px;
-      border-radius: 4px;
-      cursor: pointer;
+    .grupo {
+      margin-bottom: 10px;
     }
 
-    .grupo-canais {
-      display: none;
-      padding-left: 10px;
-      margin-top: 5px;
-    }
-
-    .grupo-canais button {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 5px 8px;
-      margin: 2px 0;
+    .grupo-titulo {
       background: #222;
-      color: #fff;
-      border: 1px solid #666;
-      border-radius: 4px;
+      padding: 8px;
       cursor: pointer;
+      color: white;
+      border: 1px solid #00ccff;
+      border-radius: 5px;
+    }
+
+    .grupo-conteudo {
+      display: none;
+      margin-top: 5px;
+    }
+
+    .grupo-conteudo button {
+      background: #333;
+      color: white;
+      border: 1px solid #00ff88;
+      padding: 5px;
+      width: 100%;
+      text-align: left;
+      margin-bottom: 4px;
+      border-radius: 4px;
       font-size: 14px;
+      cursor: pointer;
     }
 
-    #loading-bar {
-      height: 5px;
-      background: linear-gradient(to right, #0f0 0%, #0f0 100%);
-      width: 0%;
-      transition: width 0.5s ease;
-    }
-
-    #qrcode-container {
-      margin-top: 10px;
+    #qrcode {
+      margin-top: 20px;
       text-align: center;
     }
 
-    #qrcode-container img {
-      max-width: 100px;
-      display: block;
-      margin: 0 auto;
+    #qrcode img {
+      width: 120px;
+      height: 120px;
     }
 
-    #qrcode-container p {
+    #descricao-qrcode {
+      color: white;
       margin-top: 5px;
       font-size: 14px;
-      color: #fff;
     }
 
-    footer {
+    #suporte {
       text-align: center;
-      padding: 5px;
+      padding: 10px;
       font-size: 14px;
+      color: white;
     }
 
-    footer a {
-      color: #00f;
-      text-decoration: underline;
+    #suporte a {
+      color: #00ccff;
+      text-decoration: none;
+    }
+
+    #barra-carregamento {
+      height: 4px;
+      background: #00ccff;
+      width: 0%;
+      transition: width 0.4s ease;
     }
   </style>
 </head>
 <body>
+
   <header>ERIZONT</header>
-  <div id="loading-bar"></div>
-  <div id="container">
-    <div id="menu-esquerdo"></div>
-    <div id="player-container">
+  <div id="barra-carregamento"></div>
+  <main>
+    <aside id="menu"></aside>
+    <div class="conteudo">
       <video id="player" controls autoplay></video>
-      <div id="qrcode-container">
-        <img src="qrcode.png" alt="QR Code de Doação">
-        <p>Apoie o projeto com uma doação</p>
+      <div id="qrcode">
+        <img src="qrcode.png" alt="QR Code">
+        <div id="descricao-qrcode">Apoie nosso projeto com uma doação!</div>
       </div>
     </div>
-  </div>
-  <footer>
+  </main>
+  <div id="suporte">
     Suporte: <a href="mailto:erizontrevolution@gmail.com">erizontrevolution@gmail.com</a>
-  </footer>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script>
     const m3uUrl = "http://atmck.xyz:80/get.php?username=549098716&password=990251878&type=m3u_plus&output=mpegts";
 
     function atualizarBarra(percentual) {
-      document.getElementById("loading-bar").style.width = percentual + "%";
+      const barra = document.getElementById("barra-carregamento");
+      barra.style.width = percentual + "%";
+      if (percentual >= 100) {
+        setTimeout(() => barra.style.width = "0%", 1500);
+      }
     }
 
-    async function carregarConteudo() {
+    async function carregarFilmesSeries() {
+      atualizarBarra(10);
       try {
-        atualizarBarra(10);
         const res = await fetch(m3uUrl);
-        atualizarBarra(30);
         const texto = await res.text();
-        atualizarBarra(50);
+        atualizarBarra(30);
 
         const grupos = {};
         const linhas = texto.split('\n');
@@ -163,11 +171,12 @@
 
         for (let i = 0; i < linhas.length; i++) {
           const linha = linhas[i].trim();
+
           if (linha.startsWith('#EXTINF')) {
-            const match = linha.match(/#EXTINF:-1.*?group-title="(.*?)".*?,(.*)/);
-            if (match) {
-              grupo = match[1].trim();
-              nome = match[2].trim();
+            const info = linha.match(/#EXTINF:-1.*?group-title="(.*?)".*?,(.*)/);
+            if (info) {
+              grupo = info[1].trim();
+              nome = info[2].trim();
             } else {
               grupo = "Desconhecido";
               nome = linha.split(',').pop();
@@ -180,46 +189,51 @@
         }
 
         atualizarBarra(70);
-        const menu = document.getElementById("menu-esquerdo");
-        menu.innerHTML = "";
+        const container = document.getElementById("menu");
+        container.innerHTML = "";
 
         Object.keys(grupos).sort().forEach(grupo => {
-          const btnGrupo = document.createElement("button");
-          btnGrupo.className = "grupo-btn";
-          btnGrupo.textContent = `${grupo} (${grupos[grupo].length})`;
+          const divGrupo = document.createElement("div");
+          divGrupo.className = "grupo";
 
-          const divCanais = document.createElement("div");
-          divCanais.className = "grupo-canais";
+          const titulo = document.createElement("div");
+          titulo.className = "grupo-titulo";
+          titulo.textContent = `${grupo} (${grupos[grupo].length})`;
 
-          grupos[grupo].forEach(canal => {
-            const btn = document.createElement("button");
-            btn.textContent = canal.nome;
-            btn.onclick = () => tocarVideo(canal.url);
-            divCanais.appendChild(btn);
+          const conteudo = document.createElement("div");
+          conteudo.className = "grupo-conteudo";
+
+          titulo.addEventListener("click", () => {
+            conteudo.style.display = conteudo.style.display === "block" ? "none" : "block";
           });
 
-          btnGrupo.onclick = () => {
-            divCanais.style.display = divCanais.style.display === "none" ? "block" : "none";
-          };
+          grupos[grupo].forEach(item => {
+            const btn = document.createElement("button");
+            btn.textContent = item.nome;
+            btn.onclick = () => tocar(item.url);
+            conteudo.appendChild(btn);
+          });
 
-          menu.appendChild(btnGrupo);
-          menu.appendChild(divCanais);
+          divGrupo.appendChild(titulo);
+          divGrupo.appendChild(conteudo);
+          container.appendChild(divGrupo);
         });
+
         atualizarBarra(100);
-        setTimeout(() => atualizarBarra(0), 1000);
 
       } catch (e) {
         console.error("Erro ao carregar conteúdo:", e);
+        atualizarBarra(0);
       }
     }
 
-    function tocarVideo(url) {
-      const video = document.getElementById('player');
+    function tocar(url) {
+      const video = document.getElementById("player");
       video.src = url;
       video.play();
     }
 
-    carregarConteudo();
+    carregarFilmesSeries();
   </script>
 </body>
 </html>
