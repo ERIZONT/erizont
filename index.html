@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ERIZONT Versão 1.05</title>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+</head>
+
+<body>
+  <div id="tela-carregamento">
+    <div class="logo-container">
+      <h1>ERIZONT</h1>
+      <p id="frase-carregamento">Carregando conteúdos, por favor aguarde...</p>
+      <div class="xp-bar-wrapper">
+        <div class="xp-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <header>ERIZONT - Filmes e Séries</header>
+  <div id="barra-carregamento"></div>
+
+  <main>
+    <aside id="menu">
+      <div id="busca-container">
+        <label for="buscador" class="visually-hidden">Buscar títulos</label>
+        <input type="text" id="buscador" placeholder="Buscar títulos..." aria-label="Buscar títulos por nome">
+        <button id="limparBusca" title="Limpar busca" aria-label="Limpar termo de busca">&times;</button>
+        
+      </div>
+    </aside>
+
+    <div class="conteudo">
+      <div id="loading-msg" aria-live="polite">Por favor, aguarde... Pode levar até 60s.</div>
+      <div class="video-container">
+        <video id="player" controls autoplay></video>
+      </div>
+      <div class="player-buttons-container">
+        <button id="whitepaperBtn" class="whitepaper-btn">Whitepaper</button>
+        <button class="fullscreen-btn" onclick="toggleFullscreen()">Tela cheia</button>
+      </div>
+    </div>
+
+    <div id="qrcode">
+      <img src="qrcode.png" alt="QR Code">
+      <div id="descricao-qrcode">Aponte a câmera. Apoie!</div>
+    </div>
+  </main>
+
+  <div id="suporte">
+    Suporte: <a href="mailto:erizontrevolution@gmail.com">erizontrevolution@gmail.com</a>
+  </div>
+
+  <!-- Modal do Whitepaper -->
+  <div id="whitepaperModal" class="whitepaper-modal">
+    <div class="whitepaper-content">
+      <span class="close-btn">&times;</span>
+      <h2>Whitepaper</h2>
+      <div class="whitepaper-text">
+        <p>📄 Whitepaper Oficial</p>
+        <p>Plataforma de Streaming Comunitária — Manutenção, Sustentabilidade e Termos de Uso</p>
+        <p><strong>Introdução</strong></p>
+        <p>Este projeto nasceu da paixão por tecnologia, cultura e entretenimento. Nossa plataforma foi criada com o objetivo de fornecer acesso facilitado a conteúdos audiovisuais para pessoas de todas as partes do mundo, especialmente aquelas que não têm condições de arcar com os altos custos de serviços de streaming convencionais.</p>
+        <p>A manutenção dessa plataforma depende inteiramente da colaboração da comunidade — tanto em apoio financeiro quanto em compreensão dos limites legais e operacionais do projeto.</p>
+        <p><strong>Por que precisamos da sua ajuda?</strong></p>
+        <p>Embora o acesso ao site seja gratuito, os custos para mantê-lo online são reais e recorrentes. Entre os principais gastos, estão:</p>
+        <p>💻 Servidores potentes para armazenar e distribuir os conteúdos com estabilidade;</p>
+        <p>🌐 Domínios e hospedagem para manter o site acessível globalmente;</p>
+        <p>⚡ Energia elétrica e infraestrutura de suporte ao funcionamento contínuo;</p>
+        <p>👨‍💻 Equipe técnica e desenvolvedores voluntários, que trabalham horas para atualizar, corrigir e melhorar a plataforma;</p>
+        <p>🔐 Medidas de segurança para proteger os dados e acessos dos usuários.</p>
+        <p>Seu apoio, por menor que seja, faz a diferença. As doações ajudam a manter o site no ar, melhorar a performance, expandir os recursos e garantir uma experiência estável e sem anúncios intrusivos.</p>
+        <p>👉 Considere apoiar este projeto com uma doação.<br>Com a ajuda de todos, conseguimos manter o acesso livre e sem barreiras.</p>
+        <p><strong>Isenção de Responsabilidade</strong></p>
+        <p>Este site é exclusivamente para fins educacionais, de testes e demonstração de tecnologias web. Todo e qualquer conteúdo exibido, referenciado ou transmitido por meio da plataforma é de responsabilidade exclusiva do usuário.</p>
+        <p>Nós, como desenvolvedores e mantenedores do projeto, não hospedamos nenhum conteúdo próprio, tampouco incentivamos o uso indevido de materiais protegidos por direitos autorais.</p>
+        <p>Os desenvolvedores:</p>
+        <p>❌ Não possuem controle sobre os links e fluxos de mídia disponibilizados via IPTV ou terceiros;</p>
+        <p>❌ Não se responsabilizam pelo uso individual da plataforma para fins ilegais;</p>
+        <p>❌ Não incentivam a pirataria ou a violação de propriedade intelectual.</p>
+        <p>O uso deste site implica em concordância com os termos acima descritos. Recomendamos que cada usuário respeite a legislação vigente em seu país de residência.</p>
+        <p><strong>Considerações Finais</strong></p>
+        <p>Se você valoriza o projeto, considere se tornar um apoiador recorrente ou pontual. Cada contribuição auxilia na continuidade da plataforma e reforça nosso compromisso com um acesso livre, democrático e tecnológico ao entretenimento.</p>
+        <p>🔗 <a href="https://livepix.gg/erizontrevolution" target="_blank">https://livepix.gg/erizontrevolution</a></p>
+        <p>📬 Para dúvidas, sugestões ou colaborações, entre em contato conosco através do e-mail: <a href="mailto:erizontrevolution@gmail.com">erizontrevolution@gmail.com</a></p>
+        <p>Obrigado por fazer parte dessa comunidade!<br>Juntos mantemos o acesso livre e o projeto vivo.</p>
+      </div>
+      <button class="close-btn">Fechar</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { carregarFilmesSeries } from './js/contentLoader.js';
+    import { setupSearch } from './js/searchHandler.js';
+    import { setupWhitepaperModal } from './js/whitepaperModal.js';
+    import { toggleFullscreen } from './js/playerControls.js';
+
+    // Tornar toggleFullscreen globalmente acessível se for chamado por onclick no HTML
+    window.toggleFullscreen = toggleFullscreen;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      carregarFilmesSeries();
+      setupSearch();
+      setupWhitepaperModal();
+    });
+  </script>
+</body>
+</html>
